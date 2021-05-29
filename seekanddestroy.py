@@ -27,7 +27,7 @@ r = 0
 cores=7
 
 
-def seek(r, df_handler,wallet):
+def seek(r,wallet):
 	global num_threads
 	LOG_EVERY_N = 10000
 	start_time = dt.datetime.today().timestamp()
@@ -74,20 +74,17 @@ def seek(r, df_handler,wallet):
 				f.write(pub)
 				f.write('\n')
 				f.close()
-			time.sleep(30)
+			
 			print ('WINNER WINNER CHICKEN DINNER!!! ---- ' +dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), pub, priv)
+			time.sleep(30)
 			break
 					
 
-
-
-contador=0
 if __name__ == '__main__':
 	jobs = []
 	wallets = set(line.strip() for line in open('bit.txt'))
-	df_handler = pd.read_csv(open('bit.txt', 'r'))
 	for r in range(cores):
-		p = multiprocessing.Process(target=seek, args=(r,df_handler,wallets))
+		p = multiprocessing.Process(target=seek, args=(r,wallets))
 		jobs.append(p)
 		p.start()
 
