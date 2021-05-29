@@ -24,12 +24,12 @@ def ripemd160(x):
 
 
 r = 0
-cores=6
+cores=7
 
 
-def seek(r, df_handler):
+def seek(r, df_handler,wallet):
 	global num_threads
-	LOG_EVERY_N = 1000
+	LOG_EVERY_N = 10000
 	start_time = dt.datetime.today().timestamp()
 	i = 0
 	print("Core " + str(r) +":  Searching Private Key..")
@@ -56,31 +56,27 @@ def seek(r, df_handler):
 		if (i % LOG_EVERY_N) == 0:
 			print('Core :'+str(r)+" K/s = "+ str(i / time_diff))
 		#print ('Worker '+str(r)+':'+ str(i) + '.-  # '+pub + ' # -------- # '+ priv+' # ')
-		pub = pub + '\n'
-		filename = 'bit.txt'
-		with open(filename) as f:
-			for line in f:
-				if pub in line:
-					msg = "\nPublic: " + str(pub) + " ---- Private: " + str(priv) + "YEI"
-					text = msg
-					#UNCOMMENT IF 2FA from gmail is activated, or risk missing your winning ticket;)
-					#server = smtplib.SMTP("smtp.gmail.com", 587)
-					#server.ehlo()
-					#server.starttls()
-					#server.login("example@gmail.com", "password")
-					#fromaddr = "example@gmail.com"
-					#toaddr = "example@gmail.com"
-					#server.sendmail(fromaddr, toaddr, text)
-					print(text)
-					with open('Wallets.txt','a') as f:
-						f.write(priv)
-						f.write('     ')
-						f.write(pub)
-						f.write('\n')
-						f.close()
-					time.sleep(30)
-					print ('WINNER WINNER CHICKEN DINNER!!! ---- ' +dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), pub, priv)
-					break
+		if str(pub) in wallet:
+			msg = "\nPublic: " + str(pub) + " ---- Private: " + str(priv) + "YEI"
+			text = msg
+                        #UNCOMMENT IF 2FA from gmail is activated, or risk missing your winning ticket;)
+                        #server = smtplib.SMTP("smtp.gmail.com", 587)
+                        #server.ehlo()
+                        #server.starttls()
+                        #server.login("example@gmail.com", "password")
+                        #fromaddr = "example@gmail.com"
+                        #toaddr = "example@gmail.com"
+                        #server.sendmail(fromaddr, toaddr, text)
+			print(text)
+			with open('Wallets.txt','a') as f:
+				f.write(priv)
+				f.write('     ')
+				f.write(pub)
+				f.write('\n')
+				f.close()
+			time.sleep(30)
+			print ('WINNER WINNER CHICKEN DINNER!!! ---- ' +dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), pub, priv)
+			break
 					
 
 
@@ -88,9 +84,10 @@ def seek(r, df_handler):
 contador=0
 if __name__ == '__main__':
 	jobs = []
+	wallets = set(line.strip() for line in open('bit.txt'))
 	df_handler = pd.read_csv(open('bit.txt', 'r'))
 	for r in range(cores):
-		p = multiprocessing.Process(target=seek, args=(r,df_handler))
+		p = multiprocessing.Process(target=seek, args=(r,df_handler,wallets))
 		jobs.append(p)
 		p.start()
 
