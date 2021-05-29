@@ -20,7 +20,7 @@ else
 	
 (Script tested on i7-4500U 8 Cores - 16.32 K/s per Core. 11,280,384 Private Keys generated per day)
 
-(New script tested on Ryzen5 1500x 4 cores - 371 K/s per core. 224,380,800 Private Keys generated per day)
+(New script tested on Ryzen5 1500x 4 cores/8 threads - 361 K/s per thread. 248,832,000 Private Keys generated per day)
 
 i think is quite simple.
 
